@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue"
+    tools:context=".Activitys.PermissionActivity">
+
+    <ImageView
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
+        android:src="@mipmap/ic_launcher"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_100sdp"
+        android:id="@+id/icon"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Allow Permission Video gellary app to access your video files"
+        android:textColor="@color/white"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:padding="@dimen/_10sdp"
+        android:textSize="@dimen/_25sdp"
+        android:id="@+id/alert_text"
+        android:layout_below="@id/icon"
+        android:textAlignment="center"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/alert_text"
+        android:layout_margin="@dimen/_10sdp"
+        android:padding="@dimen/_10sdp"
+        android:textAlignment="center"
+        android:textSize="@dimen/_20sdp"
+        android:text="Allow"
+        android:id="@+id/allow_button"
+        android:textStyle="bold"
+        android:background="@drawable/allow_btn_bg"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/allow_button"
+        android:textAlignment="center"
+        android:text="Deny"
+        android:textSize="@dimen/_20sdp"
+        android:background="@drawable/deny_btn_bg"
+        android:textColor="@color/black"
+        android:id="@+id/Deny_button"
+        android:textStyle="bold"/>
+
+
+
+</RelativeLayout>
