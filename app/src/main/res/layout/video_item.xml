@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/_10sdp"
+    android:background="?attr/selectableItemBackground"
+    android:layout_margin="@dimen/_5sdp"
+    android:orientation="horizontal">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/Thumbnail_card"
+        android:layout_width="@dimen/_112sdp"
+        android:layout_height="@dimen/_62sdp"
+        app:cardCornerRadius="@dimen/_3sdp">
+
+        <ImageView
+            android:id="@+id/Tumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/video_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:background="@color/black"
+            android:padding="@dimen/_4sdp"
+            android:text="4:12"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_12ssp" />
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerVertical="true"
+    android:layout_toEndOf="@id/Thumbnail_card"
+    android:orientation="vertical"
+        android:layout_toLeftOf="@id/video_menu_more"
+    android:layout_margin="@dimen/_5sdp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="video title"
+        android:textColor="@color/black"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:id="@+id/video_title"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/video_size"
+        android:text="4.0MB"
+        android:textColor="@color/black"/>
+
+</LinearLayout>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/video_menu_more"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:foregroundTint="@color/black"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/more_svgrepo_com"
+        />
+
+</RelativeLayout>

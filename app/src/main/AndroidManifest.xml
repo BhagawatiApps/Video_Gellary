@@ -15,6 +15,12 @@
         android:theme="@style/Theme.Video_Gellary"
         tools:targetApi="31">
         <activity
+            android:name=".Activitys.VideoPlayerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activitys.VideoActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activitys.HomeScreen"
             android:exported="false" />
         <activity

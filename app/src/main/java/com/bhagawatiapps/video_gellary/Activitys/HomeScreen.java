@@ -32,7 +32,7 @@ public class HomeScreen extends AppCompatActivity {
     private static final String STORAGE_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE;
     RecyclerView videoFolderRecyclerView;
     ArrayList<MediaFiles> mediaFiles = new ArrayList<>();
-    ArrayList<String> videoFolderList = new ArrayList<>();
+    ArrayList<String> folderNameList = new ArrayList<>();
     VideoFolderAdapter videoFolderAdapter;
     SwipeRefreshLayout refreshFolderList;
 
@@ -90,7 +90,7 @@ public class HomeScreen extends AppCompatActivity {
     private void showVideoFolder() {
         mediaFiles = loadMediaFiles();
 
-        videoFolderAdapter = new VideoFolderAdapter(this,mediaFiles,videoFolderList);
+        videoFolderAdapter = new VideoFolderAdapter(this, mediaFiles, folderNameList);
         videoFolderRecyclerView.setAdapter(videoFolderAdapter);
 
 
@@ -114,17 +114,18 @@ public class HomeScreen extends AppCompatActivity {
                     String DATE_ADDED = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED));
 
                     MediaFiles files = new MediaFiles(ID, TITLE, DESPLAY_NAME, SIZE, DURATION, PATH, DATE_ADDED);
-                    mediaFiles1.add(files);
 
                     int index = PATH.lastIndexOf("/");
                     String subPath = PATH.substring(0, index);
-                    if (!videoFolderList.contains(subPath)) {
-                        videoFolderList.add(subPath);
+                    if (!folderNameList.contains(subPath)) {
+                        folderNameList.add(subPath);
+                        Log.d("subPath", "loadMediaFiles: " + subPath);
                     }
-                    Log.d("TAG", "loadMediaFiles: "+subPath);
+                    mediaFiles1.add(files);
+
+
                 }
             }
-            cursor.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
