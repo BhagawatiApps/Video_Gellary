@@ -4,29 +4,35 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bhagawatiapps.video_gellary.R;
 
+@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class PermissionActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 100;
     private static final String STORAGE_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE;
+    private static final String VIDEO_STORAGE_PERMISSION = Manifest.permission.READ_MEDIA_VIDEO;
+    private static final String WRITE_STORAGE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
-    AppCompatButton allow_button, Deny_button;
+    AppCompatButton allowButton, denyButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,65 +45,76 @@ public class PermissionActivity extends AppCompatActivity {
             return insets;
         });
 
-        //find views
-        allow_button = findViewById(R.id.allow_button);
-        Deny_button = findViewById(R.id.Deny_button);
+        // Find views
+        allowButton = findViewById(R.id.allow_button);
+        denyButton = findViewById(R.id.Deny_button);
 
-        //set status bar color
+        // Set status bar color
         getWindow().setStatusBarColor(getResources().getColor(R.color.dark_blue));
         getWindow().setNavigationBarColor(getResources().getColor(R.color.dark_blue));
 
-        //check permission
+        // Check if permissions are already granted
         sharedPreferences = getSharedPreferences("permission", MODE_PRIVATE);
-        String permission = sharedPreferences.getString("permission", "");
-        if (permission.equals("true")) {
-            Intent intent = new Intent(PermissionActivity.this, HomeScreen.class);
-            startActivity(intent);
-            finish();
+        if (sharedPreferences.getString("permission", "").equals("true")) {
+            navigateToHomeScreen();
         }
 
-
-        //set click listeners
-        Deny_button.setOnClickListener(v -> {
+        // Set click listeners
+        denyButton.setOnClickListener(v -> {
             editor = sharedPreferences.edit();
             editor.putString("permission", "false");
             editor.apply();
-            Intent intent = new Intent(PermissionActivity.this, HomeScreen.class);
-            startActivity(intent);
-            finish();
+            navigateToHomeScreen();
         });
 
-
-        //check permission
-        allow_button.setOnClickListener(v -> {
-            if (checkSelfPermission(STORAGE_PERMISSION) == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(PermissionActivity.this, HomeScreen.class);
-                startActivity(intent);
-                finish();
+        allowButton.setOnClickListener(v -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                checkPermissions(VIDEO_STORAGE_PERMISSION, WRITE_STORAGE_PERMISSION);
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{STORAGE_PERMISSION}, PERMISSION_REQUEST_CODE);
+                checkPermissions(STORAGE_PERMISSION, WRITE_STORAGE_PERMISSION);
             }
         });
-
-
     }
 
+    private void checkPermissions(String... permissions) {
+        boolean allPermissionsGranted = true;
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                allPermissionsGranted = false;
+                break;
+            }
+        }
+
+        if (allPermissionsGranted) {
+            Toast.makeText(this, "Permissions Already Granted", Toast.LENGTH_SHORT).show();
+            editor = sharedPreferences.edit();
+            editor.putString("permission", "true");
+            editor.apply();
+            navigateToHomeScreen();
+        } else {
+            ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUEST_CODE);
+        }
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
+            boolean allPermissionsGranted = true;
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allPermissionsGranted = false;
+                    break;
+                }
+            }
+            if (allPermissionsGranted) {
+                Toast.makeText(this, "Permissions Granted", Toast.LENGTH_SHORT).show();
                 editor = sharedPreferences.edit();
                 editor.putString("permission", "true");
                 editor.apply();
-                Intent intent = new Intent(PermissionActivity.this, HomeScreen.class);
-                startActivity(intent);
-                finish();
+                navigateToHomeScreen();
             } else {
-                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Permissions Denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -105,10 +122,16 @@ public class PermissionActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (checkSelfPermission(STORAGE_PERMISSION) == PackageManager.PERMISSION_GRANTED) {
-            Intent intent = new Intent(PermissionActivity.this, HomeScreen.class);
-            startActivity(intent);
-            finish();
+        if ((checkSelfPermission(STORAGE_PERMISSION) == PackageManager.PERMISSION_GRANTED) ||
+                (checkSelfPermission(VIDEO_STORAGE_PERMISSION) == PackageManager.PERMISSION_GRANTED) ||
+                (checkSelfPermission(WRITE_STORAGE_PERMISSION) == PackageManager.PERMISSION_GRANTED)) {
+            navigateToHomeScreen();
         }
+    }
+
+    private void navigateToHomeScreen() {
+        Intent intent = new Intent(PermissionActivity.this, HomeScreen.class);
+        startActivity(intent);
+        finish();
     }
 }

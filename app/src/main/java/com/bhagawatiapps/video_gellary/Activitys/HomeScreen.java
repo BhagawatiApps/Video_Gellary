@@ -5,11 +5,13 @@ import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
@@ -25,11 +27,13 @@ import com.bhagawatiapps.video_gellary.R;
 
 import java.util.ArrayList;
 
+@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class HomeScreen extends AppCompatActivity {
 
 
     private static final int PERMISSION_REQUEST_CODE = 100;
     private static final String STORAGE_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE;
+    private static final String VIDEO_STORAGE_PERMISSION = Manifest.permission.READ_MEDIA_VIDEO;
     RecyclerView videoFolderRecyclerView;
     ArrayList<MediaFiles> mediaFiles = new ArrayList<>();
     ArrayList<String> folderNameList = new ArrayList<>();
@@ -65,7 +69,8 @@ public class HomeScreen extends AppCompatActivity {
 
 
         // Check for storage permission
-        if (checkSelfPermission(STORAGE_PERMISSION) == PackageManager.PERMISSION_DENIED) {
+        if (checkSelfPermission(STORAGE_PERMISSION) == PackageManager.PERMISSION_DENIED &&
+                (checkSelfPermission(VIDEO_STORAGE_PERMISSION) == PackageManager.PERMISSION_DENIED)) {
 
             Dialog dialog = new Dialog(this);
             dialog.setContentView(R.layout.permission_dialog);
@@ -73,7 +78,11 @@ public class HomeScreen extends AppCompatActivity {
             AppCompatButton allow = dialog.findViewById(R.id.allow);
             AppCompatButton cancel = dialog.findViewById(R.id.cancel);
             allow.setOnClickListener(v -> {
-                requestPermissions(new String[]{STORAGE_PERMISSION}, PERMISSION_REQUEST_CODE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    requestPermissions(new String[]{VIDEO_STORAGE_PERMISSION}, PERMISSION_REQUEST_CODE);
+                } else {
+                    requestPermissions(new String[]{STORAGE_PERMISSION}, PERMISSION_REQUEST_CODE);
+                }
                 dialog.dismiss();
             });
             cancel.setOnClickListener(v -> {

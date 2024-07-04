@@ -1,6 +1,11 @@
 package com.bhagawatiapps.video_gellary.Model;
 
-public class MediaFiles {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+public class MediaFiles implements Parcelable {
 
     String Id;
     String Title;
@@ -20,6 +25,28 @@ public class MediaFiles {
         Added_date = added_date;
     }
 
+
+    protected MediaFiles(Parcel in) {
+        Id = in.readString();
+        Title = in.readString();
+        Display_name = in.readString();
+        Size = in.readString();
+        Duration = in.readString();
+        Path = in.readString();
+        Added_date = in.readString();
+    }
+
+    public static final Creator<MediaFiles> CREATOR = new Creator<MediaFiles>() {
+        @Override
+        public MediaFiles createFromParcel(Parcel in) {
+            return new MediaFiles(in);
+        }
+
+        @Override
+        public MediaFiles[] newArray(int size) {
+            return new MediaFiles[size];
+        }
+    };
 
     public String getId() {
         return Id;
@@ -78,4 +105,19 @@ public class MediaFiles {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(Id);
+        dest.writeString(Title);
+        dest.writeString(Display_name);
+        dest.writeString(Size);
+        dest.writeString(Duration);
+        dest.writeString(Path);
+        dest.writeString(Added_date);
+    }
 }
